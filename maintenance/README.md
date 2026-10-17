@@ -77,3 +77,16 @@ GitHub匿名Search接口已实测HTTP200和CORS，合入状态通过`merged_at`�
 #17344首次CI发现内部函数重名导致mypy报错，已改为不同函数名；后续CI还发现测试夹具重名，已将夹具底层方法改为_load_weight并补查测试文件；修复后重跑72项及15个子项通过，运行时代码及测试文件分别通过mypy1.11.1的Python3.10/3.11/3.12三目标检查。全仓本地mypy因CPU依赖/缓存问题未通过，不能声明全仓类型检查已完成。通过追加历史抵消提交并保留已发布历史，实测CI相同git rebase命令成功，结果树与本轮已测代码完全一致；未强推。当前PR head为dfbfcfcbf1e749933268a6b993796543ffe662d3。
 
 15项DOM逻辑检查与HTML静态检查通过；未进行真实浏览器视觉验收，未运行NPU或模型推理、精度及性能测试。CPU验证不能证明#18978原始ACL图捕获错误已解决。
+
+
+## 2026-10-17T19:19:48.349781+08:00：远端CI结果更新
+
+三个复用PR仍Open、目标main、均未合入，新增PR为0。
+
+| PR完整链接 | 最新结果 |
+|---|---|
+| https://github.com/vllm-project/vllm/pull/44102 | DCO通过；pre-run-check受人工验证门槛阻塞。 |
+| https://github.com/vllm-project/vllm-ascend/pull/13489 | DCO、pre-commit与两组CPU UT通过；ci-gate受维护者启用精度/完整测试的标签门槛阻塞。 |
+| https://github.com/vllm-project/vllm-ascend/pull/17344 | DCO、pre-commit与两组CPU UT通过；ci-gate受维护者启用精度/完整测试的标签门槛阻塞。 |
+
+此处更新只核查PR元数据与固定head的CI状态，没有新增模型/NPU/性能验收；不是宣称远端CI全绿。全量151个历史PR快照时间不因这三项状态刷新而改写。
