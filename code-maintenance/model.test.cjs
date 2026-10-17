@@ -8,9 +8,9 @@ const response = value => ({ok:true, status:200, json:async()=>value});
 const item = (n, extra={}) => ({number:n, repository_url:'https://api.github.com/repos/example/project', html_url:`https://github.com/example/project/issues/${n}`, title:`Issue ${n}`, state:'open', user:{login:'other'}, labels:[], updated_at:'2026-10-17T00:00:00Z', ...extra});
 
 test('snapshot counts use separate PR, candidate and Issue units', () => {
-  assert.deepEqual([seed.prs.length,seed.candidates.length,seed.issues.length],[151,29,61]);
+  assert.deepEqual([seed.prs.length,seed.candidates.length,seed.issues.length],[151,29,62]);
   assert.deepEqual(['open','merged','closed'].map(s=>seed.prs.filter(r=>r.state===s).length),[50,35,66]);
-  assert.deepEqual(['open','closed'].map(s=>seed.issues.filter(r=>r.state===s).length),[52,9]);
+  assert.deepEqual(['open','closed'].map(s=>seed.issues.filter(r=>r.state===s).length),[53,9]);
   assert.equal(seed.issues.filter(r=>r.mine).length,6);
   assert.equal(seed.candidates.filter(r=>r.batch==='new').length,3);
   for(const list of [seed.prs,seed.candidates,seed.issues])assert.equal(new Set(list.map(r=>r.id)).size,list.length);
@@ -26,6 +26,21 @@ test('candidate source priorities survive filtering and sorting', () => {
   assert.ok(M.filterRows(seed,state('pending',{remote:'yes'})).every(r=>r.relatedPRs.length||r.ownPRs.length));
   assert.ok(M.filterRows(seed,state('pending',{remote:'no'})).every(r=>!r.relatedPRs.length&&!r.ownPRs.length));
   assert.equal(M.filterRows(seed,state('pending',{own:'yes'})).length+M.filterRows(seed,state('pending',{own:'no'})).length,29);
+});
+test('all documented branch families, history and failures remain visible with linked Issues', () => {
+  assert.equal(seed.branches.length,74);
+  assert.equal(new Set(seed.branches.map(r=>r.id)).size,74);
+  assert.equal(seed.taskCoverage.directories.length,6);assert.equal(seed.taskCoverage.files,643);
+  assert.equal(seed.taskCoverage.coreBranchHeads+seed.taskCoverage.auxiliaryBranchHeads+seed.taskCoverage.supplementalBranchHeads,74);
+  assert.ok(seed.branches.every(r=>r.sha&&!r.headError&&!r.headChanged));
+  assert.ok(seed.branches.every(r=>!r.issueUrl||seed.issues.some(i=>i.url===r.issueUrl)));
+  assert.ok(seed.issues.some(i=>i.repo==='sgl-project/SpecForge'&&i.number===501));
+  assert.equal(M.filterRows(seed,state('branches',{status:'device_failed'})).length,1);
+  assert.equal(M.filterRows(seed,state('branches',{status:'validation_failed'})).length,1);
+  assert.ok(M.filterRows(seed,state('branches',{status:'alternative'})).length>0);
+  const rows=M.filterRows(seed,state('branches'));
+  assert.equal(rows[0].priority,'P0');assert.ok(['main','verify','compare','slot'].includes(rows[0].stage));
+  const star=rows.at(-1);assert.equal(M.filterRows(seed,state('branches',{starred:true}),{[star.id]:{star:true}})[0].id,star.id);
 });
 test('repository, lifecycle, CI, origin, search and stars intersect without mutating records', () => {
   const original=JSON.stringify(seed), row=seed.prs.find(r=>r.state==='open');
@@ -135,8 +150,11 @@ test('controller boots, changes modules/language, filters, pages and saves local
   ids.starred.checked=true;await ids.starred.fire('change');assert.equal(ids.rows.children.length,1);
   assert.ok([...storage.values()].some(x=>x.includes('local-only draft')));
   await ids.modules.children[0].fire('click');assert.match(ids.count.textContent,/151/);assert.equal(ids.rows.children.length,20);
-  await ids.modules.children[2].fire('click');assert.match(ids.count.textContent,/61/);
+  await ids.modules.children[2].fire('click');assert.match(ids.count.textContent,/62/);
   ids.origin.value='mine';await ids.origin.fire('change');assert.equal(ids.rows.children.length,6);
   ids.search.value='unmatchable-term';await ids.search.fire('input');assert.equal(ids.empty.hidden,false);assert.equal(ids.rows.children.length,0);
   assert.equal(new URL(location.href).searchParams.get('q'),'unmatchable-term');
+  await ids.modules.children[3].fire('click');assert.match(ids.count.textContent,/74/);assert.match(ids.modules.children[3].textContent,/74/);assert.equal(ids.rows.children.length,20);
+  ids.status.value='device_failed';await ids.status.fire('change');assert.equal(ids.rows.children.length,1);
+  await ids['lang-zh'].fire('click');assert.match(ids.rows.children[0].textContent,/设备验证失败/);
 });

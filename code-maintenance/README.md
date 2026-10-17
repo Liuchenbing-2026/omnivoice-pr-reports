@@ -2,15 +2,26 @@
 
 | 模块 | 初始快照范围 | 用途 |
 |---|---|---|
+| 全量修复分支 | 74 条远端分支：64 条核心＋4 条 Speculators 历史＋6 条补充 | 覆盖全部同名任务目录，保留失败、历史替代及授权范围外项 |
 | PR 管理 | 151 个公开 PR：50 开放、35 合入、66 关闭未合入 | 按仓库、状态、CI 快照筛选，跟进历史提交 |
 | 待提交候选 | 29 个候选：26 个既有候选＋3 个新增重点组 | 保留原文优先级、修复分支、验证证据及剩余工作；不是 29 个已验收 PR |
-| Issue 管理 | 61 个实际 Issue：52 开放、9 关闭 | 跟进任务 Issue 和账号创建的 Issue；不代表上游全部 Issue |
+| Issue 管理 | 62 个实际 Issue：53 开放、9 关闭 | 跟进任务 Issue 和账号创建的 Issue；不代表上游全部 Issue |
 
-**入口 / Open:** https://liuchenbing-2026.github.io/omnivoice-pr-reports/code-maintenance/?tab=pending&lang=zh
+**入口 / Open:** https://liuchenbing-2026.github.io/omnivoice-pr-reports/code-maintenance/?tab=branches&lang=zh
 
 中文 / English 一键切换。支持搜索、筛选、分页、本地星标和备注、CSV 导出、点击刷新公开 GitHub 状态。原始 Issue / PR 标题、分支、SHA、URL 保留原文。
 
-The three modules separate submitted PRs, conditional candidates and tracked Issues. Search, filters, pagination, local stars/notes, CSV export and user-triggered public GitHub state refresh are available. Original titles, branches, SHAs and URLs are retained.
+Four modules separate all registered branches, submitted PRs, conditional candidates and tracked Issues. Search, filters, pagination, local stars/notes, CSV export and user-triggered public GitHub state refresh are available. Original titles, branches, SHAs and URLs are retained.
+
+## 全量范围与排序 / Full coverage and order
+
+本次回查 `Model_test/main` 固定版本 `2c37c291054008945ba37ec293ca7e193c3a92d0`：6 个任务目录、643 个文件。所有同名任务28目录均纳入，包括 SpecForge、两类 Ascend 扫描目录、vLLM 和十段式总览，以及任务29 Omni。页面“数据范围”逐项列出固定版本的目录链接。
+
+74 条分支是去重后的远端分支计数，已全部回读 HEAD，本次没有发现与已归档验证 SHA 的差异。另补入此前漏列、与 DFlash 修复关联的 SpecForge Issue #501。62 个 Issue 包含任务跟进和账号创建的记录，不是上游所有 Issue。
+
+默认按推进阶段分组，再按原文 P0/P1/P2/P3 排列，未登记原文分级的保留“未登记分级”，不虚造优先级。仍需推进的修复在前，已有 PR、失败、历史替代和已覆盖项分别保留分类；可筛选。29 项候选是单独的推进视图，与74条分支存在对应关系，不能相加当作新问题数。
+
+The pinned source covers six directories and 643 files, including every same-numbered Task 28 directory and Task 29. All 74 deduplicated branch heads were read back; none differs from the recorded validation SHA. SpecForge Issue #501 was added. Default branch order groups work by next stage, then preserves original P0/P1/P2/P3 ratings. Items without a recorded source rating remain unranked. Candidates and branches overlap and are not additive counts. Historical validation failures, alternatives, restricted targets and covered scope remain visible. This is metadata reconciliation, not new framework or NPU acceptance.
 
 ## 数据与刷新 / Data and refresh
 
@@ -26,12 +37,12 @@ Refresh is manual and read-only. PR state refresh does not refresh CI/review sna
 
 ## 运行与验证 / Run and validate
 
-纯静态 HTML/CSS/JavaScript，无构建步骤、镜像、额外运行依赖、模型服务或 NPU 资源。GitHub Pages 分支为 `task24-omnivoice-report-20261010`，目录为 `code-maintenance/`；任务源码分支为 `docs/code-maintenance-desk-20261017`，交付 SHA 以该分支 Git 记录为准。本地文件仅用于构建与检查，查看使用上面的 HTTPS 地址。
+纯静态 HTML/CSS/JavaScript，无构建步骤、镜像、额外运行依赖、模型服务或 NPU 资源。GitHub Pages 分支为 `task24-omnivoice-report-20261010`，目录为 `code-maintenance/`；任务源码分支为 `docs/code-maintenance-task-coverage-20261017`，交付 SHA 以该分支 Git 记录为准。本地文件仅用于构建与检查，查看使用上面的 HTTPS 地址。
 
-Static HTML/CSS/JavaScript; no build, container, model service or NPU allocation. GitHub Pages serves this directory from `task24-omnivoice-report-20261010`. Source is on `docs/code-maintenance-desk-20261017`; use its Git commit to pin the delivered version.
+Static HTML/CSS/JavaScript; no build, container, model service or NPU allocation. GitHub Pages serves this directory from `task24-omnivoice-report-20261010`. Source is on `docs/code-maintenance-task-coverage-20261017`; use its Git commit to pin the delivered version.
 
 ```bash
-git clone --branch docs/code-maintenance-desk-20261017 https://github.com/Liuchenbing-2026/omnivoice-pr-reports.git
+git clone --branch docs/code-maintenance-task-coverage-20261017 https://github.com/Liuchenbing-2026/omnivoice-pr-reports.git
 cd omnivoice-pr-reports
 node --check code-maintenance/app.js
 node --test code-maintenance/model.test.cjs
