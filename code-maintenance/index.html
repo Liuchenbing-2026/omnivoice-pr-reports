@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>代码维护台 · PR / 候选 / Issue</title>
+  <link rel="stylesheet" href="./style.css">
+  <script src="./app.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#workspace">跳到工作区 / Skip to workspace</a>
+  <header>
+    <div><h1 data-i18n="title">代码维护台</h1><p id="account" class="muted">Liuchenbing-2026 · GitHub</p></div>
+    <div class="languages" role="group" aria-label="中文 / English"><button id="lang-zh" type="button" aria-pressed="true">中文</button><button id="lang-en" type="button" aria-pressed="false">English</button></div>
+  </header>
+  <main id="workspace">
+    <nav id="modules" aria-label="模块 / Modules"></nav>
+    <div id="stats" class="stats"></div>
+    <section class="filters" aria-label="筛选 / Filters">
+      <label><span data-i18n="repo">代码仓</span><select id="repo"></select></label>
+      <label><span id="status-label" data-i18n="status">状态</span><select id="status"></select></label>
+      <label id="priority-field"><span data-i18n="priority">原文优先级</span><select id="priority"></select></label>
+      <label id="batch-field"><span data-i18n="batch">候选批次</span><select id="batch"></select></label>
+      <label id="own-field"><span data-i18n="own">我方是否已提 PR</span><select id="own"></select></label>
+      <label id="remote-field"><span data-i18n="remote">远端是否有同题 PR</span><select id="remote"></select></label>
+      <label id="ci-field"><span data-i18n="ci">CI 采集快照</span><select id="ci"></select></label>
+      <label id="origin-field"><span data-i18n="origin">Issue 来源</span><select id="origin"></select></label>
+      <label><span data-i18n="sort">排序</span><select id="sort"></select></label>
+    </section>
+    <div class="toolbar">
+      <input id="search" type="search" aria-label="搜索 / Search" placeholder="搜索标题、编号、分支">
+      <label class="star-filter"><input id="starred" type="checkbox"><span data-i18n="starred">只看星标</span></label>
+      <button id="reset" type="button" data-i18n="reset">重置</button>
+      <button id="refresh" type="button" data-i18n="refresh">刷新 GitHub 状态</button>
+      <button id="add-issue" type="button" data-i18n="add">加入 Issue 跟进</button>
+      <button id="export" type="button" data-i18n="export">导出筛选结果</button>
+    </div>
+    <div class="result-line"><span id="count" aria-live="polite"></span><span id="as-of" class="muted"></span></div>
+    <p id="message" role="status" aria-live="polite" hidden></p>
+    <div class="table-wrap" role="region" tabindex="0" aria-label="维护列表，可横向滚动 / Maintenance table, horizontally scrollable">
+      <table><thead id="head"></thead><tbody id="rows"></tbody></table>
+    </div>
+    <p id="empty" class="empty" hidden data-i18n="empty">没有匹配项，请调整筛选条件。</p>
+    <div class="pagination"><button id="prev" type="button" data-i18n="prev">上一页</button><span id="page"></span><button id="next" type="button" data-i18n="next">下一页</button></div>
+    <details class="scope"><summary data-i18n="scopeTitle">数据范围与使用说明</summary><div id="scope"></div></details>
+  </main>
+  <dialog id="detail" aria-labelledby="detail-title"><div class="dialog-head"><h2 id="detail-title"></h2><button id="close-detail" type="button" data-i18n="close">关闭</button></div><div id="detail-body"></div><section class="local"><label for="note" data-i18n="note">本地备注，仅保存在此浏览器</label><textarea id="note" rows="4" maxlength="6000"></textarea><div><button id="save-note" type="button" data-i18n="save">保存备注</button><button id="detail-star" type="button" data-i18n="star">星标</button></div><p id="note-message" role="status"></p></section></dialog>
+  <dialog id="add-dialog" aria-labelledby="add-title"><form id="add-form"><div class="dialog-head"><h2 id="add-title" data-i18n="add">加入 Issue 跟进</h2><button id="close-add" type="button" data-i18n="close">关闭</button></div><label for="issue-url" data-i18n="issueURL">公开 GitHub Issue 链接</label><input id="issue-url" type="url" required placeholder="https://github.com/owner/repo/issues/123" autofocus><p class="muted" data-i18n="addHelp">读取已有公开 Issue 并加入本地列表，不会创建 GitHub Issue。</p><button type="submit" data-i18n="add">加入 Issue 跟进</button><p id="add-message" role="status"></p></form></dialog>
+  <noscript>此工具需要 JavaScript。This tool requires JavaScript.</noscript>
+</body>
+</html>
