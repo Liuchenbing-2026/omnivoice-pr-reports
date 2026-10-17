@@ -1,0 +1,15 @@
+{
+  "name": "code-maintenance-tool",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Public GitHub PR, tracked issue and fix-branch maintenance dashboard",
+  "scripts": {
+    "test": "node tests/test_manager.cjs && node tests/test_issues.cjs"
+  },
+  "devDependencies": {
+    "jsdom": "26.1.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
