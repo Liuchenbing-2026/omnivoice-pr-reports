@@ -9,7 +9,7 @@ const item = (n, extra={}) => ({number:n, repository_url:'https://api.github.com
 
 test('snapshot counts use separate PR, candidate and Issue units', () => {
   assert.deepEqual([seed.prs.length,seed.candidates.length,seed.issues.length],[151,29,62]);
-  assert.deepEqual(['open','merged','closed'].map(s=>seed.prs.filter(r=>r.state===s).length),[50,35,66]);
+  assert.deepEqual(['open','merged','closed'].map(s=>seed.prs.filter(r=>r.state===s).length),[53,35,63]);
   assert.deepEqual(['open','closed'].map(s=>seed.issues.filter(r=>r.state===s).length),[53,9]);
   assert.equal(seed.issues.filter(r=>r.mine).length,6);
   assert.equal(seed.candidates.filter(r=>r.batch==='new').length,3);

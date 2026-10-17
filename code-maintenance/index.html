@@ -6,7 +6,7 @@
   <meta name="color-scheme" content="light">
   <title>代码维护台 · PR / 候选 / Issue</title>
   <link rel="stylesheet" href="./style.css">
-  <script src="./app.js?v=20261017-execution-order" defer></script>
+  <script src="./app.js?v=20261017-status-refresh" defer></script>
 </head>
 <body>
   <a class="skip" href="#workspace">跳到工作区 / Skip to workspace</a>
@@ -15,6 +15,7 @@
     <div class="languages" role="group" aria-label="中文 / English"><button id="lang-zh" type="button" aria-pressed="true">中文</button><button id="lang-en" type="button" aria-pressed="false">English</button></div>
   </header>
   <main id="workspace">
+    <p id="refresh-mode" class="muted">手动刷新 · 非自动实时</p>
     <p id="coverage-note" class="muted"></p>
     <nav id="modules" aria-label="模块 / Modules"></nav>
     <div id="stats" class="stats"></div>
