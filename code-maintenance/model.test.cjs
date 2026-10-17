@@ -17,7 +17,7 @@ test('snapshot counts use separate PR, candidate and Issue units', () => {
   assert.ok(!seed.issues.some(r=>r.repo==='vllm-project/vllm-ascend'&&r.number===18376));
 });
 test('candidate source priorities survive filtering and sorting', () => {
-  const rows=M.filterRows(seed,state('pending'));
+  const rows=M.filterRows(seed,state('pending',{sort:'severity'}));
   assert.equal(rows[0].priority,'P0');
   for(let i=1;i<rows.length;i++)assert.ok(M.priorities[rows[i-1].priority]<=M.priorities[rows[i].priority]);
   const p0=M.filterRows(seed,state('pending',{repo:'vllm-project/vllm-ascend',priority:'P0'}));
@@ -26,6 +26,13 @@ test('candidate source priorities survive filtering and sorting', () => {
   assert.ok(M.filterRows(seed,state('pending',{remote:'yes'})).every(r=>r.relatedPRs.length||r.ownPRs.length));
   assert.ok(M.filterRows(seed,state('pending',{remote:'no'})).every(r=>!r.relatedPRs.length&&!r.ownPRs.length));
   assert.equal(M.filterRows(seed,state('pending',{own:'yes'})).length+M.filterRows(seed,state('pending',{own:'no'})).length,29);
+});
+test('default execution recommendations match both lists while severity remains an explicit option',()=>{
+  for(const tab of ['pending','branches']){
+    assert.deepEqual(M.filterRows(seed,state(tab)).slice(0,3).map(r=>r.number),[61954,18978,18679]);
+    assert.deepEqual(M.filterRows(seed,state(tab,{sort:'severity'})).slice(0,3).map(r=>r.number),[61954,61972,61966]);
+    assert.deepEqual(M.filterRows(seed,state(tab)).slice(0,3).map(r=>r.number),[61954,18978,18679]);
+  }
 });
 test('all documented branch families, history and failures remain visible with linked Issues', () => {
   assert.equal(seed.branches.length,74);
@@ -154,7 +161,7 @@ test('controller boots, changes modules/language, filters, pages and saves local
   ids.origin.value='mine';await ids.origin.fire('change');assert.equal(ids.rows.children.length,6);
   ids.search.value='unmatchable-term';await ids.search.fire('input');assert.equal(ids.empty.hidden,false);assert.equal(ids.rows.children.length,0);
   assert.equal(new URL(location.href).searchParams.get('q'),'unmatchable-term');
-  await ids.modules.children[3].fire('click');assert.match(ids.count.textContent,/74/);assert.match(ids.modules.children[3].textContent,/74/);assert.equal(ids.rows.children.length,20);
+  await ids.modules.children[3].fire('click');assert.match(ids.count.textContent,/74/);assert.match(ids.rows.children[0].textContent,/#61954/);assert.match(ids.rows.children[1].textContent,/#18978/);assert.match(ids.rows.children[2].textContent,/#18679/);assert.match(ids.modules.children[3].textContent,/74/);assert.equal(ids.rows.children.length,20);
   ids.status.value='device_failed';await ids.status.fire('change');assert.equal(ids.rows.children.length,1);
   await ids['lang-zh'].fire('click');assert.match(ids.rows.children[0].textContent,/设备验证失败/);
 });
