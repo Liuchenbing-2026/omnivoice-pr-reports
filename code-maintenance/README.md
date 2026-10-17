@@ -19,9 +19,9 @@ Four modules separate all registered branches, submitted PRs, conditional candid
 
 74 条分支是去重后的远端分支计数，已全部回读 HEAD，本次没有发现与已归档验证 SHA 的差异。另补入此前漏列、与 DFlash 修复关联的 SpecForge Issue #501。62 个 Issue 包含任务跟进和账号创建的记录，不是上游所有 Issue。
 
-默认按推进阶段分组，再按任务原表的实际推进顺序排列。全量分支及待提交候选的前三项统一为 vLLM #61954、Ascend #18978、Ascend #18679。P0/P1/P2/P3 是原文问题分级，可单独筛选，或选择“原文分级 P0→P3”排序，不能与实际执行顺序混用；未登记原文分级的保留“未登记分级”，不虚造优先级。仍需推进的修复在前，已有 PR、失败、历史替代和已覆盖项分别保留分类；可筛选。29 项候选是单独的推进视图，与74条分支存在对应关系，不能相加当作新问题数。
+默认按推进阶段分组，再按任务原表的实际推进顺序排列。全量分支、待提交候选及 Issue 默认列表的前三项统一为 vLLM #61954、Ascend #18978、Ascend #18679。P0/P1/P2/P3 是原文问题分级，可单独筛选，或选择“原文分级 P0→P3”排序，不能与实际执行顺序混用；未登记原文分级的保留“未登记分级”，不虚造优先级。仍需推进的修复在前，已有 PR、失败、历史替代和已覆盖项分别保留分类；可筛选。29 项候选是单独的推进视图，与74条分支存在对应关系，不能相加当作新问题数。
 
-The pinned source covers six directories and 643 files, including every same-numbered Task 28 directory and Task 29. All 74 deduplicated branch heads were read back; none differs from the recorded validation SHA. SpecForge Issue #501 was added. Default branch order groups work by next stage, then follows the source preparation queue. Both branch and candidate views start with vLLM #61954, Ascend #18978 and Ascend #18679. Original P0/P1/P2/P3 ratings remain available as a separate filter and sort option; they are not the execution queue. Items without a recorded source rating remain unranked. Candidates and branches overlap and are not additive counts. Historical validation failures, alternatives, restricted targets and covered scope remain visible. This is metadata reconciliation, not new framework or NPU acceptance.
+The pinned source covers six directories and 643 files, including every same-numbered Task 28 directory and Task 29. All 74 deduplicated branch heads were read back; none differs from the recorded validation SHA. SpecForge Issue #501 was added. Default branch order groups work by next stage, then follows the source preparation queue. Branch, candidate and Issue default views start with vLLM #61954, Ascend #18978 and Ascend #18679. Original P0/P1/P2/P3 ratings remain available as a separate filter and sort option; they are not the execution queue. Items without a recorded source rating remain unranked. Candidates and branches overlap and are not additive counts. Historical validation failures, alternatives, restricted targets and covered scope remain visible. This is metadata reconciliation, not new framework or NPU acceptance.
 
 ## 数据与刷新 / Data and refresh
 
@@ -37,12 +37,12 @@ Refresh is manual and read-only. PR state refresh does not refresh CI/review sna
 
 ## 运行与验证 / Run and validate
 
-纯静态 HTML/CSS/JavaScript，无构建步骤、镜像、额外运行依赖、模型服务或 NPU 资源。GitHub Pages 分支为 `task24-omnivoice-report-20261010`，目录为 `code-maintenance/`；任务源码分支为 `chore/task28-29-status-refresh-20261017`，交付 SHA 以该分支 Git 记录为准。本地文件仅用于构建与检查，查看使用上面的 HTTPS 地址。
+纯静态 HTML/CSS/JavaScript，无构建步骤、镜像、额外运行依赖、模型服务或 NPU 资源。GitHub Pages 分支为 `task24-omnivoice-report-20261010`，目录为 `code-maintenance/`；任务源码分支为 `fix/task28-29-issue-execution-order-20261017`，交付 SHA 以该分支 Git 记录为准。本地文件仅用于构建与检查，查看使用上面的 HTTPS 地址。
 
-Static HTML/CSS/JavaScript; no build, container, model service or NPU allocation. GitHub Pages serves this directory from `task24-omnivoice-report-20261010`. Source is on `chore/task28-29-status-refresh-20261017`; use its Git commit to pin the delivered version.
+Static HTML/CSS/JavaScript; no build, container, model service or NPU allocation. GitHub Pages serves this directory from `task24-omnivoice-report-20261010`. Source is on `fix/task28-29-issue-execution-order-20261017`; use its Git commit to pin the delivered version.
 
 ```bash
-git clone --branch chore/task28-29-status-refresh-20261017 https://github.com/Liuchenbing-2026/omnivoice-pr-reports.git
+git clone --branch fix/task28-29-issue-execution-order-20261017 https://github.com/Liuchenbing-2026/omnivoice-pr-reports.git
 cd omnivoice-pr-reports
 node --check code-maintenance/app.js
 node --test code-maintenance/model.test.cjs
@@ -70,3 +70,9 @@ node --test code-maintenance/model.test.cjs
 The tool is manual, not a live feed. Opening reads the latest published seed without a browser cache; refresh buttons update local public-API caches only. They do not publish server snapshots, discover new task branches or run tests. The full snapshot above refreshed all public PR lifecycle/head/CI/review metadata, tracked Issues and registered branch heads. Three closed PRs reopened and no additional PR merged. The Python command is read-only on GitHub, updates the local seed atomically and writes an audit receipt. It neither mutates GitHub Issues/PRs nor pushes/deploys files. Source discovery and framework/NPU acceptance are separate work.
 
 本轮完整采集使用 Python 3.9.6、GitHub CLI 2.65.0；页面逻辑检查使用 Node.js 24.13.1。测试中的固定快照计数须在新采集后与真实变化一并核对。
+
+## Issue 默认排序修正 / Issue default order
+
+Issue 页默认与候选推进顺序对齐，前三为 #61954 → #18978 → #18679。以完整 Issue URL 关联代码仓和编号，避免跨仓同号误匹配。开放项优先；未登记推进顺序的开放项按更新时间补排，关闭项后置。可单独选择“最近更新优先”，恢复纯时间顺序。表格增加“顺序／状态”列；更新时间是 GitHub Issue 更新时间，不是优先级，也不是采集时间。
+
+Issue defaults now follow the candidate execution queue using full Issue URLs as keys. Open Issues with a known queue position come first; unranked open Issues follow by update time, and closed Issues come last. Most-recently-updated remains an explicit independent sort. The first column shows display order and state; update time is not priority or collection time. This changes ordering only, without revalidating framework fixes.

@@ -34,6 +34,17 @@ test('default execution recommendations match both lists while severity remains 
     assert.deepEqual(M.filterRows(seed,state(tab)).slice(0,3).map(r=>r.number),[61954,18978,18679]);
   }
 });
+test('Issues share the execution queue, retain explicit recency, and do not confuse repository-local IDs',()=>{
+  assert.deepEqual(M.filterRows(seed,state('issues')).slice(0,3).map(r=>r.number),[61954,18978,18679]);
+  const chronological=M.filterRows(seed,state('issues',{sort:'updated'}));
+  for(let i=1;i<chronological.length;i++)assert.ok(Date.parse(chronological[i-1].updatedAt)>=Date.parse(chronological[i].updatedAt));
+  assert.notDeepEqual(chronological.slice(0,3).map(r=>r.number),[61954,18978,18679]);
+  const known=seed.issues.find(r=>r.number===61954),other={...known,id:'different/repo#61954',repo:'different/repo',url:'https://github.com/different/repo/issues/61954',updatedAt:'2099-01-01T00:00:00Z'};
+  const data={...seed,issues:[other,known]};
+  assert.equal(M.filterRows(data,state('issues'))[0].url,known.url);
+  data.issues=[other,{...known,state:'closed'}];
+  assert.equal(M.filterRows(data,state('issues'))[0].url,other.url);
+});
 test('all documented branch families, history and failures remain visible with linked Issues', () => {
   assert.equal(seed.branches.length,74);
   assert.equal(new Set(seed.branches.map(r=>r.id)).size,74);
@@ -157,7 +168,7 @@ test('controller boots, changes modules/language, filters, pages and saves local
   ids.starred.checked=true;await ids.starred.fire('change');assert.equal(ids.rows.children.length,1);
   assert.ok([...storage.values()].some(x=>x.includes('local-only draft')));
   await ids.modules.children[0].fire('click');assert.match(ids.count.textContent,/151/);assert.equal(ids.rows.children.length,20);
-  await ids.modules.children[2].fire('click');assert.match(ids.count.textContent,/62/);
+  await ids.modules.children[2].fire('click');assert.match(ids.count.textContent,/62/);assert.match(ids.rows.children[0].textContent,/#61954/);assert.match(ids.rows.children[1].textContent,/#18978/);assert.match(ids.rows.children[2].textContent,/#18679/);
   ids.origin.value='mine';await ids.origin.fire('change');assert.equal(ids.rows.children.length,6);
   ids.search.value='unmatchable-term';await ids.search.fire('input');assert.equal(ids.empty.hidden,false);assert.equal(ids.rows.children.length,0);
   assert.equal(new URL(location.href).searchParams.get('q'),'unmatchable-term');
